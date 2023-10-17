@@ -1,15 +1,22 @@
-from requests import get
-from json import dump, load
-from datetime import datetime
-from re import search, escape
-from pdf2image import convert_from_bytes
 from os.path import isfile
 from os import remove, stat
+
+from requests import get
+
+from re import search, escape
+
+from pdf2image import convert_from_bytes
+
+from json import dump, load
+
+from datetime import datetime
+
 
 date = str(datetime.now().date())
 date = date[-2:] + '.' + date[-5:-3] + '.' + date[-8:-6]
 
-def downloadMenu():
+
+def download_menu():
     html = str(get('https://sesc.nsu.ru/sveden/food/').text)
     start = escape('upload/iblock/')
     end = escape('menu_' + date + '.pdf')
@@ -23,27 +30,32 @@ def downloadMenu():
 
     return names
 
-def lastDownloadDate():
+def last_download_date():
     if stat('data.json').st_size != 0:
         with open('data.json', 'r') as file:
             return load(file)['date']
+
     return None
 
-def lastNames():
+def last_names():
     if stat('data.json').st_size != 0:
         with open('data.json', 'r') as file:
             return load(file)['names']
+
     return []
 
-def getMenu():
+def get_menu():
     if not isfile('data.json'):
         with open('data.json', 'w') as file:
             pass
-    if lastDownloadDate() != date:
-        for i in lastNames():
+
+    if last_download_date() != date:
+        for i in last_names():
             remove(i)
+
         with open('data.json', 'w') as file:
-            names = downloadMenu()
+            names = download_menu()
             data = {'date': date, 'names': names}
             dump(data, file)
-    return lastNames()
+
+    return last_names()
