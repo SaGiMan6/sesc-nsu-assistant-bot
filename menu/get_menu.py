@@ -1,4 +1,4 @@
-from os import remove, stat
+from os import remove
 from os.path import isfile
 
 from requests import get
@@ -10,8 +10,6 @@ from pdf2image import convert_from_bytes
 from json import dump, load
 
 from datetime import datetime
-
-import asyncio
 
 def dateNow():
     date = str(datetime.now().date())
