@@ -11,6 +11,8 @@ from json import dump, load
 
 from datetime import datetime
 
+import asyncio
+
 def dateNow():
     date = str(datetime.now().date())
     date = date[-2:] + '.' + date[-5:-3] + '.' + date[-8:-6]
@@ -42,41 +44,35 @@ def download_menu(date=dateNow()):
     return names
 
 
-def last_download_date():
-    if stat('data.json').st_size != 0:
-        with open('data.json', 'r') as file:
-            return load(file)['date']
-
-    return None
-
-
-def last_names():
-    if stat('data.json').st_size != 0:
-        with open('data.json', 'r') as file:
-            return load(file)['names']
-
-    return []
-
-
-def get_menu(date=dateNow()):
+def get_data():
     if not isfile('data.json'):
         with open('data.json', 'w') as file:
-            pass
+            data = {'date': '', 'names': []}
+            dump(data, file)
+    with open('data.json', 'r') as file:
+        return load(file)
 
-    if last_download_date() != date:
+def remove_trash(names):
+    for i in names:
+        remove(i)
+
+def write_data(data={'date': '', 'names': []}):
+    with open('data.json', 'w') as file:
+        dump(data, file)
+
+def get_menu(date=dateNow()):
+    data = get_data()
+    if date != data['date']:
         names = download_menu(date)
-        if names != None:
-            for i in last_names():
-                remove(i)
-
-            with open('data.json', 'w') as file:
-                data = {'date': date, 'names': names}
-                dump(data, file)
-        else:
+        if names == None:
             return []
-
-    return last_names()
+        else:
+            write_data({'date': date, 'names': names})
+            remove_trash(data['names'])
+            return names
+    else:
+        return data['names']
 
 
 if __name__ == "__main__":
-    print(get_menu())
+    get_menu()
