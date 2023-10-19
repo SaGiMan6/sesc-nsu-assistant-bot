@@ -1,6 +1,9 @@
 **/.idea/*
-**/.venv/*
+
 **/__pycache__
-private_Config.ini
-*.jpg
+**/.venv/*
+
+private_Config.json
 menu/data.json
+
+*.jpg
