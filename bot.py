@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 
-# from handlers import bot_status
+from handlers import bot_status, bot_menu
 
 import json
 
@@ -19,7 +19,7 @@ async def main():
     bot = Bot(token=private_config["BOT_TOKEN"])
     dp = Dispatcher()
 
-    # dp.include_routers(bot_status.router)
+    dp.include_routers(bot_status.router, bot_menu.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

@@ -36,18 +36,18 @@ def download_menu(date=dateNow()):
     menu_files = convert_from_bytes(response.content)
     names = ['' for i in range(len(menu_files))]
     for i in range(len(menu_files)):
-        names[i] = 'menu_' + date + '_page_' + str(i) + '.jpg'
+        names[i] = 'menu/' + 'menu_' + date + '_page_' + str(i) + '.jpg'
         menu_files[i].save(names[i], 'JPEG')
 
     return names
 
 
 def get_data():
-    if not isfile('data.json'):
-        with open('data.json', 'w') as file:
+    if not isfile('menu/data.json'):
+        with open('menu/data.json', 'w') as file:
             data = {'date': '', 'names': []}
             dump(data, file)
-    with open('data.json', 'r') as file:
+    with open('menu/data.json', 'r') as file:
         return load(file)
 
 def remove_trash(names):
@@ -55,7 +55,7 @@ def remove_trash(names):
         remove(i)
 
 def write_data(data={'date': '', 'names': []}):
-    with open('data.json', 'w') as file:
+    with open('menu/data.json', 'w') as file:
         dump(data, file)
 
 def get_menu(date=dateNow()):
