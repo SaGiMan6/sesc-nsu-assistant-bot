@@ -11,12 +11,14 @@ from json import dump, load
 
 from datetime import datetime
 
-def dateNow():
+
+def date_now():
     date = str(datetime.now().date())
     date = date[-2:] + '.' + date[-5:-3] + '.' + date[-8:-6]
     return date
 
-def download_menu(date=dateNow()):
+
+def download_menu(date=date_now()):
     link = 'https://sesc.nsu.ru/sveden/food/'
     try:
         response = get(link)
@@ -26,7 +28,7 @@ def download_menu(date=dateNow()):
     start = escape('upload/iblock/')
     end = escape('menu_' + date + '.pdf')
     link = search(fr'{start}\S+{end}', html)
-    if link == None:
+    if link is None:
         return None
     link = 'https://sesc.nsu.ru/' + link.group(0)
     try:
@@ -50,19 +52,22 @@ def get_data():
     with open('menu/data.json', 'r') as file:
         return load(file)
 
+
 def remove_trash(names):
     for i in names:
         remove(i)
+
 
 def write_data(data={'date': '', 'names': []}):
     with open('menu/data.json', 'w') as file:
         dump(data, file)
 
-def get_menu(date=dateNow()):
+
+def get_menu(date=date_now()):
     data = get_data()
     if date != data['date']:
         names = download_menu(date)
-        if names == None:
+        if names is None:
             return []
         else:
             write_data({'date': date, 'names': names})
