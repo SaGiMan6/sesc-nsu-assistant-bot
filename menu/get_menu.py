@@ -1,24 +1,37 @@
-from os import remove
+from shutil import rmtree
+from os import mkdir
 from os.path import isfile
 
 from requests import get
 
-from re import search, escape
+from re import search, escape, match
 
 from pdf2image import convert_from_bytes
 
-from json import dump, load
-
 from datetime import datetime
 
+path = 'menu/'
 
 def date_now():
-    date = str(datetime.now().date())
-    date = date[-2:] + '.' + date[-5:-3] + '.' + date[-8:-6]
-    return date
+    return str(datetime.now().date())
 
 
-def download_menu(date=date_now()):
+def norm_date(date):
+    if match('\d\d\d\d-\d\d-\d\d', date):
+        date = date[-2:] + '.' + date[-5:-3] + '.' + date[-8:-6]
+        return date
+    elif match('\d\d\.\d\d\.\d\d', date):
+        return date
+    else:
+        raise ValueError('Date format is wrong.')
+
+def delete_menu(date=date_now()):
+    date = norm_date(date)
+    rmtree('menu_' + date)
+
+
+def get_menu(date=date_now()):
+    date = norm_date(date)
     link = 'https://sesc.nsu.ru/sveden/food/'
     try:
         response = get(link)
@@ -36,46 +49,16 @@ def download_menu(date=date_now()):
     except:
         return None
     menu_files = convert_from_bytes(response.content)
+    mkdir('menu_' + date)
     names = ['' for i in range(len(menu_files))]
     for i in range(len(menu_files)):
-        names[i] = 'menu/' + 'menu_' + date + '_page_' + str(i) + '.jpg'
+        names[i] = path + 'menu_' + date + '/' + str(i) + '.jpg'
         menu_files[i].save(names[i], 'JPEG')
 
     return names
 
 
-def get_data():
-    if not isfile('menu/data.json'):
-        with open('menu/data.json', 'w') as file:
-            data = {'date': '', 'names': []}
-            dump(data, file)
-    with open('menu/data.json', 'r') as file:
-        return load(file)
-
-
-def remove_trash(names):
-    for i in names:
-        remove(i)
-
-
-def write_data(data={'date': '', 'names': []}):
-    with open('menu/data.json', 'w') as file:
-        dump(data, file)
-
-
-def get_menu(date=date_now()):
-    data = get_data()
-    if date != data['date']:
-        names = download_menu(date)
-        if names is None:
-            return []
-        else:
-            write_data({'date': date, 'names': names})
-            remove_trash(data['names'])
-            return names
-    else:
-        return data['names']
-
-
 if __name__ == "__main__":
+    path = ''
     get_menu()
+    #delete_menu()
