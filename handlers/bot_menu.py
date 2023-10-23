@@ -4,7 +4,7 @@ from aiogram.types import Message, InputMediaPhoto, FSInputFile
 
 import datetime
 
-from menu.get_menu import get_menu
+from menu.get_menu import get_menu, delete_menu
 
 
 router = Router()
@@ -23,3 +23,5 @@ async def cmd_menu(message: Message):
             menu_to_upload.append(InputMediaPhoto(media=file, caption=f"Меню на {str(datetime.date.today())}"))
 
     await message.answer_media_group(menu_to_upload)
+
+    delete_menu()
