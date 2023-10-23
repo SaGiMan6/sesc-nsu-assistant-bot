@@ -1,6 +1,6 @@
 from shutil import rmtree
+
 from os import mkdir
-from os.path import isfile
 
 from requests import get
 
@@ -27,7 +27,7 @@ def norm_date(date):
 
 def delete_menu(date=date_now()):
     date = norm_date(date)
-    rmtree('menu_' + date)
+    rmtree(path + 'menu_' + date)
 
 
 def get_menu(date=date_now()):
@@ -49,7 +49,7 @@ def get_menu(date=date_now()):
     except:
         return None
     menu_files = convert_from_bytes(response.content)
-    mkdir('menu_' + date)
+    mkdir(path + 'menu_' + date)
     names = ['' for i in range(len(menu_files))]
     for i in range(len(menu_files)):
         names[i] = path + 'menu_' + date + '/' + str(i) + '.jpg'
