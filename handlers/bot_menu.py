@@ -67,8 +67,7 @@ router = Router()
 
 @router.message(Command("menu"))
 async def cmd_menu(message: Message):
-    # date = str(datetime.date.today())
-    date = "2023-10-25"
+    date = str(datetime.date.today())
 
     menu_to_upload, download_used = await preparing_menu(date)
 
