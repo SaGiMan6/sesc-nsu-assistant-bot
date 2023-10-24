@@ -8,14 +8,14 @@ from handlers import bot_status, bot_menu
 import json
 
 with open('private_config.json', 'r') as file:
-    private_config = json.load(file)
+    token = json.load(file)["BOT_TOKEN"]
 
 
 logging.basicConfig(level=logging.INFO)
 
 
 async def main():
-    bot = Bot(token=private_config["BOT_TOKEN"])
+    bot = Bot(token=token)
     dp = Dispatcher()
 
     dp.include_routers(bot_status.router, bot_menu.router)
