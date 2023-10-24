@@ -11,8 +11,6 @@ async def check_menu_id(date):
 
     await db.close()
 
-    print(type(result))
-
     return result
 
 

@@ -13,17 +13,24 @@ router = Router()
 async def preparing_menu(date):
     result: tuple = await check_menu_id(date)
 
+    if result is None:
+        need_to_download = True
+    else:
+        need_to_download = False
+
     media_group = []
 
-    if result is None:
+    if need_to_download:
         menu_pages = get_menu(date)
     else:
         menu_pages = str(result[1]).split()
 
-    if menu_pages is not None:
+    if menu_pages is None:
+        return [], need_to_download, False
+    else:
         for menu_page in menu_pages:
             control_page = menu_page
-            if result is None:
+            if need_to_download:
                 menu_page = FSInputFile(menu_page)
 
             if control_page != menu_pages[-1]:
@@ -31,21 +38,15 @@ async def preparing_menu(date):
             else:
                 media_group.append(InputMediaPhoto(media=menu_page, caption=f"Меню на {date.strftime(r'%d.%m.%Y')}"))
 
-        if result is None:
-            return media_group, True, True
-        else:
-            return media_group, False, True
-    else:
-        return [], False, False
+        return media_group, need_to_download, True
 
 
-async def download_cleaning(date, result, num):
+async def download_cleaning(result, date, num):
     delete_menu(date)
 
     sent_files = ""
-
-    for i in range(-1, ((num + 1) * -1), -1):
-        sent_files = " " + str(result[i].photo[-1].file_id) + sent_files
+    for i in range(0, num):
+        sent_files = sent_files + str(result[i].photo[-1].file_id) + " "
     id_string = sent_files.strip()
 
     await add_menu_id(date, id_string)
@@ -54,9 +55,11 @@ async def download_cleaning(date, result, num):
 @router.message(Command("menu"))
 async def cmd_menu(message: Message):
     date = datetime.date.today()
+    # date = datetime.date(2023, 10, 30)
     result = ""
 
     menu_to_upload, download_used, not_empty = await preparing_menu(date)
+    number_of_menus = len(menu_to_upload)
 
     if not_empty:
         result = await message.answer_media_group(menu_to_upload)
@@ -64,4 +67,4 @@ async def cmd_menu(message: Message):
         await message.answer(f"Возникла ошибка при получении меню на {date.strftime(r'%d.%m.%Y')}")
 
     if download_used:
-        await download_cleaning(date, result, len(menu_to_upload))
+        await download_cleaning(result, date, number_of_menus)
