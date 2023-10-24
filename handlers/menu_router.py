@@ -2,28 +2,17 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message, InputMediaPhoto, FSInputFile
 
-import aiosqlite
-
 import datetime
 
-from menu.get_menu import get_menu, delete_menu
+from scripts.interaction_with_menu_data_base import check_menu_id, add_menu_id
+from scripts.get_and_delete_menu import get_menu, delete_menu
 
 router = Router()
 
 
 async def preparing_menu(date):
-    # Узнаем у БД, есть ли на нужное число id фотографий
-    db = await aiosqlite.connect("data_base/menu_data_base.db")
+    result: tuple = await check_menu_id(date)
 
-    await db.execute("CREATE TABLE IF NOT EXISTS Menus (date TEXT PRIMARY KEY, id TEXT)")
-
-    cursor = await db.execute(f"SELECT date, id FROM Menus WHERE date = ?", (str(date),))
-    result = await cursor.fetchone()
-
-    await db.close()
-
-    # Если в БД нашлись id, отправляем их
-    # Если же в БД их нету, скачиваем фотографии
     media_group = []
 
     if result is None:
@@ -59,18 +48,12 @@ async def download_cleaning(date, result, num):
         sent_files = " " + str(result[i].photo[-1].file_id) + sent_files
     id_string = sent_files.strip()
 
-    db = await aiosqlite.connect("data_base/menu_data_base.db")
-
-    await db.execute("INSERT INTO Menus (date, id) VALUES (?, ?)", (str(date), id_string))
-
-    await db.commit()
-    await db.close()
+    await add_menu_id(date, id_string)
 
 
 @router.message(Command("menu"))
 async def cmd_menu(message: Message):
     date = datetime.date.today()
-    # date = datetime.date(2023, 10, 30)
     result = ""
 
     menu_to_upload, download_used, not_empty = await preparing_menu(date)
