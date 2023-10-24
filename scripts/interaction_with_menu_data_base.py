@@ -2,7 +2,7 @@ import aiosqlite
 
 
 async def check_menu_id(date):
-    db = await aiosqlite.connect("data_base/menu_data_base.db")
+    db = await aiosqlite.connect("data_bases/menu_data_base.db")
 
     await db.execute("CREATE TABLE IF NOT EXISTS Menus (date TEXT PRIMARY KEY, id TEXT)")
 
@@ -15,7 +15,7 @@ async def check_menu_id(date):
 
 
 async def add_menu_id(date, id_string: str):
-    db = await aiosqlite.connect("data_base/menu_data_base.db")
+    db = await aiosqlite.connect("data_bases/menu_data_base.db")
 
     await db.execute("INSERT INTO Menus (date, id) VALUES (?, ?)", (str(date), id_string))
 
