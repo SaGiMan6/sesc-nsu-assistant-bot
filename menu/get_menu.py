@@ -13,27 +13,13 @@ from datetime import datetime
 path = 'menu/'
 
 
-def date_now():
-    return str(datetime.now().date())
-
-
-def norm_date(date):
-    if match(r"\d\d\d\d-\d\d-\d\d", date):
-        date = date[-2:] + "." + date[-5:-3] + "." + date[-8:-6]
-        return date
-    elif match(r"\d\d\.\d\d\.\d\d", date):
-        return date
-    else:
-        raise ValueError("Date format is wrong.")
-
-
-def delete_menu(date=date_now()):
-    date = norm_date(date)
+def delete_menu(date=datetime.now()):
+    date = str(date.strftime(r"%d.%m.%y"))
     rmtree(path + "menu_" + date)
 
 
-def get_menu(date=date_now()):
-    date = norm_date(date)
+def get_menu(date=datetime.now()):
+    date = str(date.strftime(r"%d.%m.%y"))
     link = "https://sesc.nsu.ru/sveden/food/"
     try:
         response = get(link)
