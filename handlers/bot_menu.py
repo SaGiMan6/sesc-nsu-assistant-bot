@@ -8,6 +8,8 @@ import datetime
 
 from menu.get_menu import get_menu, delete_menu
 
+router = Router()
+
 
 async def preparing_menu(date):
     # Узнаем у БД, есть ли на нужное число id фотографий
@@ -29,20 +31,23 @@ async def preparing_menu(date):
     else:
         menu_pages = str(result[1]).split()
 
-    for menu_page in menu_pages:
-        control_page = menu_page
+    if menu_pages is not None:
+        for menu_page in menu_pages:
+            control_page = menu_page
+            if result is None:
+                menu_page = FSInputFile(menu_page)
+
+            if control_page != menu_pages[-1]:
+                media_group.append(InputMediaPhoto(media=menu_page))
+            else:
+                media_group.append(InputMediaPhoto(media=menu_page, caption=f"Меню на {date}"))
+
         if result is None:
-            menu_page = FSInputFile(menu_page)
-
-        if control_page != menu_pages[-1]:
-            media_group.append(InputMediaPhoto(media=menu_page))
+            return media_group, True, True
         else:
-            media_group.append(InputMediaPhoto(media=menu_page, caption=f"Меню на {date}"))
-
-    if result is None:
-        return media_group, True
+            return media_group, False, True
     else:
-        return media_group, False
+        return [], False, False
 
 
 async def download_cleaning(date, result, num):
@@ -62,18 +67,17 @@ async def download_cleaning(date, result, num):
     await db.close()
 
 
-router = Router()
-
-
 @router.message(Command("menu"))
 async def cmd_menu(message: Message):
     date = str(datetime.date.today())
+    result = ""
 
-    menu_to_upload, download_used = await preparing_menu(date)
+    menu_to_upload, download_used, not_empty = await preparing_menu(date)
 
-    result = await message.answer_media_group(menu_to_upload)
+    if not_empty:
+        result = await message.answer_media_group(menu_to_upload)
+    else:
+        await message.answer(f"Возникла ошибка при получении меню на {date}")
 
     if download_used:
         await download_cleaning(date, result, len(menu_to_upload))
-
-
