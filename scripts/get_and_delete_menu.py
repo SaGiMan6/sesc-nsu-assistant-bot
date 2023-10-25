@@ -10,6 +10,7 @@ from pdf2image import convert_from_bytes
 
 from datetime import datetime
 
+
 path = ""
 
 
@@ -47,6 +48,5 @@ def get_menu(date=datetime.now()):
 
 
 if __name__ == "__main__":
-    path = ""
     get_menu()
     # delete_menu()
