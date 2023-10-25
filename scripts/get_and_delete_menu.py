@@ -10,7 +10,7 @@ from pdf2image import convert_from_bytes
 
 from datetime import datetime
 
-path = 'temp_files/'
+path = ""
 
 
 def delete_menu(date=datetime.now()):
