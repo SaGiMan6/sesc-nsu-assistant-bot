@@ -10,4 +10,4 @@ router = Router()
 async def cmd_start(message: Message):
     await message.answer("Этот бот создан для помощи учащимся СУНЦ НГУ \n\n" +
                          "На данный момент работают команды:\n" +
-                         "/menu – Команда, чтобы узнать меню столовой")
+                         "/menu_today – Команда, чтобы узнать меню столовой")
