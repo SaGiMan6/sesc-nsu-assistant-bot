@@ -83,16 +83,16 @@ async def send_calendar_fab(message: Message, date: datetime.date, edit: bool):
                              reply_markup=get_menu_calendar_keyboard_fab(date))
 
 
-@router.message(Command("menu"))
-async def cmd_menu(message: Message):
+@router.message(Command("menu_group"))
+async def cmd_menu_group(message: Message):
     config = {"media_group": True,
               "new_message": True}
 
     await send_menu_fab(message, config)
 
 
-@router.message(Command("menu_today"))
-async def cmd_menu_today(message: Message):
+@router.message(Command("menu"))
+async def cmd_menu(message: Message):
     config = {"media_group": False,
               "new_message": True}
 
