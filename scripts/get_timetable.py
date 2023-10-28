@@ -2,7 +2,7 @@ import asyncio
 
 import aiohttp
 
-import pandas as pd
+from pandas import read_html #probably need lxml
 
 from io import StringIO
 
@@ -12,7 +12,7 @@ async def download_table():
   async with aiohttp.ClientSession() as session:
     async with session.get(url) as response:
       html = await response.text()
-  return pd.read_html(StringIO(html), header=1, encoding="utf-8")[0]
+  return read_html(StringIO(html), header=1, encoding="utf-8")[0]
 
 
 def get_day(df, column_name, day_of_week):
