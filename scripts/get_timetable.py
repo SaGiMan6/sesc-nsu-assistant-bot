@@ -1,14 +1,18 @@
 import asyncio
 
+import aiohttp
+
 import pandas as pd
+
+from io import StringIO
 
 
 async def download_table():
-  link = "https://docs.google.com/spreadsheets/u/0/d/e/2PACX-1vQdS9Qd6cdKjcvTefM_PaaODSfpkpk55Zl2g4QxBVpKkUJsU1U08wKXdi6cSkNBAQ/pubhtml"
-  try:
-    return pd.read_html(link, header=1, encoding="utf-8")[0]
-  except:
-    raise ValueError("Интернет забыл включить или в гугле забанили?")
+  url = "https://docs.google.com/spreadsheets/u/0/d/e/2PACX-1vQdS9Qd6cdKjcvTefM_PaaODSfpkpk55Zl2g4QxBVpKkUJsU1U08wKXdi6cSkNBAQ/pubhtml"
+  async with aiohttp.ClientSession() as session:
+    async with session.get(url) as response:
+      html = await response.text()
+  return pd.read_html(StringIO(html), header=1, encoding="utf-8")[0]
 
 
 def get_day(df, column_name, day_of_week):
