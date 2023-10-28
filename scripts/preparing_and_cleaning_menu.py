@@ -1,4 +1,11 @@
 from aiogram.types import InputMediaPhoto, FSInputFile
+from aiogram.types import Message
+
+import aiofiles
+
+import datetime
+
+import json
 
 from scripts.interaction_with_menu_data_base import check_menu_id, add_menu_id
 from scripts.get_and_delete_menu import get_menu, delete_menu
@@ -64,7 +71,23 @@ async def preparing_menu(config: dict):
         return list_of_files, config
 
 
-async def download_cleaning(result, config):
+async def send_menu_to_download(message: Message, date: datetime.date):
+    config = {"media_group": True,
+              "new_message": True,
+              "date": date}
+
+    menu_to_upload, config = await preparing_menu(config)
+
+    async with aiofiles.open('private_config.json', 'r') as file:
+        read_file = await file.read()
+        spam_chat_id: int = json.loads(read_file)["ADMIN_USER_ID"][1]
+
+    result = await message.bot.send_media_group(chat_id=spam_chat_id, media=menu_to_upload)
+
+    await download_cleaning(message, result, config)
+
+
+async def download_cleaning(message: Message, result, config):
     delete_menu(config["date"])
 
     if config["media_group"]:
@@ -77,3 +100,4 @@ async def download_cleaning(result, config):
     else:
         print()
         # Сообщение админу о том, что пользователь загрузил меню, которого нет в БД
+        await send_menu_to_download(message, config["date"])

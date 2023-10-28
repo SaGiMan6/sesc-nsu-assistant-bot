@@ -1,12 +1,8 @@
 import datetime
 
-import locale
-
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from keyboards.keyboard_classes import MenuSimpleCallbackFactory, MenuCalendarCallbackFactory
-
-locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 
 def create_date_config(date: datetime.date):
@@ -16,8 +12,8 @@ def create_date_config(date: datetime.date):
     new_config["month"] = int(date.strftime(r"%m"))
     new_config["day"] = int(date.strftime(r"%d"))
 
-    new_config["months"] = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-                            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+    new_config["months"] = ["☃️ Январь", "❄️ Февраль", "🌷 Март", "💮 Апрель", "🌸 Май", "🍧 Июнь",
+                            "🏖️ Июль", "🌻 Август", "🍁 Сентябрь", "🕸️ Октябрь", "🌧️ Ноябрь", "⛄ Декабрь"]
 
     if new_config["month"] != 12:
         new_config["days_in_month"] = (datetime.date(new_config["year"], new_config["month"] + 1, 1) -
@@ -26,16 +22,18 @@ def create_date_config(date: datetime.date):
         new_config["days_in_month"] = (datetime.date(new_config["year"] + 1, 1, 1) -
                                        datetime.date(new_config["year"], new_config["month"], 1)).days
 
-    new_config["first_day_in_week"] = (int(datetime.date(new_config["year"], new_config["month"], 1).strftime(
+    new_config["first_week_day_in_month"] = (int(datetime.date(new_config["year"], new_config["month"], 1).strftime(
         r"%w")) - 1) % 7
 
-    new_config["strings_in_calendar"] = (new_config["first_day_in_week"] + new_config["days_in_month"] + 6) // 7
-    # new_config["strings_in_calendar"] = 6
+    new_config["strings_in_calendar"] = (new_config["first_week_day_in_month"] + new_config["days_in_month"] + 6) // 7
 
     new_config["last_days"] = ((new_config["strings_in_calendar"] * 7) -
-                               (new_config["first_day_in_week"] + new_config["days_in_month"]))
+                               (new_config["first_week_day_in_month"] + new_config["days_in_month"]))
 
     new_config["days_in_week"] = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+
+    new_config["delta_plus"] = datetime.timedelta(days=(45 - new_config["day"]))
+    new_config["delta_minus"] = datetime.timedelta(days=(new_config["day"] + 15))
 
     return new_config
 
@@ -69,8 +67,6 @@ def get_menu_simple_keyboard_fab(page, date, number, need_pages=True):
 def get_menu_calendar_keyboard_fab(date: datetime.date):
     config: dict = create_date_config(date)
 
-    delta_month = datetime.timedelta(days=config["days_in_month"])
-
     builder_1 = InlineKeyboardBuilder()
     builder_1.button(
         text=f"{config['months'][config['month'] - 1]} {config['year']}",
@@ -85,7 +81,7 @@ def get_menu_calendar_keyboard_fab(date: datetime.date):
             callback_data=MenuCalendarCallbackFactory(action="nothing")
         )
 
-    for i in range(config["first_day_in_week"]):
+    for i in range(config["first_week_day_in_month"]):
         builder_2.button(
             text=" ",
             callback_data=MenuCalendarCallbackFactory(action="nothing")
@@ -111,12 +107,12 @@ def get_menu_calendar_keyboard_fab(date: datetime.date):
 
     builder_3 = InlineKeyboardBuilder()
     builder_3.button(
-        text="⏪",
-        callback_data=MenuCalendarCallbackFactory(action="change", date=(date - delta_month))
+        text="⏪ Месяц",
+        callback_data=MenuCalendarCallbackFactory(action="change", date=(date - config["delta_minus"]))
     )
     builder_3.button(
-        text="⏩",
-        callback_data=MenuCalendarCallbackFactory(action="change", date=(date + delta_month))
+        text="⏩ Месяц",
+        callback_data=MenuCalendarCallbackFactory(action="change", date=(date + config["delta_plus"]))
     )
     builder_3.adjust(2)
 

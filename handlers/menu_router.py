@@ -71,7 +71,7 @@ async def send_menu_fab(message: Message, config, date=datetime.date.today(), pa
                                                                              config["number_of_pages"]))
 
     if config["download"] and not config["empty"]:
-        await download_cleaning(result, config)
+        await download_cleaning(message, result, config)
 
 
 async def send_calendar_fab(message: Message, date: datetime.date, edit: bool):
