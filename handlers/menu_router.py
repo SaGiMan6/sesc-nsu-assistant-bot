@@ -85,10 +85,6 @@ async def send_calendar_fab(message: Message, date: datetime.date, edit: bool):
 
 @router.message(Command("menu_group"))
 async def cmd_menu_group(message: Message):
-    print(f"User id: {message.from_user.id}, Username: {message.from_user.username}")
-    print(f"First name: {message.from_user.first_name}, Last name: {message.from_user.last_name}")
-    print("/menu_group")
-
     config = {"media_group": True,
               "new_message": True}
 
@@ -97,10 +93,6 @@ async def cmd_menu_group(message: Message):
 
 @router.message(Command("menu"))
 async def cmd_menu(message: Message):
-    print(f"User id: {message.from_user.id}, Username: {message.from_user.username}")
-    print(f"First name: {message.from_user.first_name}, Last name: {message.from_user.last_name}")
-    print("/menu")
-
     config = {"media_group": False,
               "new_message": True}
 
@@ -110,10 +102,6 @@ async def cmd_menu(message: Message):
 @router.callback_query(MenuSimpleCallbackFactory.filter())
 async def callbacks_menu_page_fab(callback: CallbackQuery,
                                   callback_data: MenuSimpleCallbackFactory):
-    print(f"User id: {callback.from_user.id}, Username: {callback.from_user.username}")
-    print(f"First name: {callback.from_user.first_name}, Last name: {callback.from_user.last_name}")
-    print("Menu_callback")
-
     if callback_data.action == "change":
         config = {"media_group": False,
                   "new_message": False}
@@ -129,10 +117,6 @@ async def callbacks_menu_page_fab(callback: CallbackQuery,
 @router.callback_query(MenuCalendarCallbackFactory.filter())
 async def callbacks_menu_calendar_fab(callback: CallbackQuery,
                                       callback_data: MenuCalendarCallbackFactory):
-    print(f"User id: {callback.from_user.id}, Username: {callback.from_user.username}")
-    print(f"First name: {callback.from_user.first_name}, Last name: {callback.from_user.last_name}")
-    print("Calendar_callback")
-
     if callback_data.action == "date":
         config = {"media_group": False,
                   "new_message": True}
