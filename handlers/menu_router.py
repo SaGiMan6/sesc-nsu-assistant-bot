@@ -2,23 +2,12 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 
-import datetime
 
-from messages.menu_messages import SingleMenuMessage, GroupMenuMessage
+from messages.menu_messages import SingleMenuMessage, GroupMenuMessage, CalendarMenuMessage
 
 from keyboards.menu_keyboard_classes import MenuSimpleCallbackFactory, MenuCalendarCallbackFactory
-from keyboards.menu_keyboards import get_menu_calendar_keyboard_fab
 
 router = Router()
-
-
-async def send_calendar_fab(message: Message, date: datetime.date, edit: bool):
-    if edit:
-        await message.edit_reply_markup(reply_markup=get_menu_calendar_keyboard_fab(date))
-    else:
-        await message.delete()
-        await message.answer("Выберите нужную вам дату",
-                             reply_markup=get_menu_calendar_keyboard_fab(date))
 
 
 @router.message(Command("menu_group"))
@@ -53,7 +42,11 @@ async def callbacks_menu_page_fab(callback: CallbackQuery,
         await callback.answer()
 
     if callback_data.action == "calendar":
-        await send_calendar_fab(callback.message, callback_data.date, False)
+        calendar_message = CalendarMenuMessage(callback.message, callback_data.date)
+
+        await callback.message.delete()
+
+        await calendar_message.send_message()
         await callback.answer()
 
 
@@ -72,7 +65,11 @@ async def callbacks_menu_calendar_fab(callback: CallbackQuery,
         await callback.answer()
 
     if callback_data.action == "change":
-        await send_calendar_fab(callback.message, callback_data.date, True)
+        calendar_message = CalendarMenuMessage(callback.message, callback_data.date)
+
+        calendar_message.new_message = False
+
+        await calendar_message.send_message()
         await callback.answer()
 
     if callback_data.action == "nothing":

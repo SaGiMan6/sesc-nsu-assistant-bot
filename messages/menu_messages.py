@@ -6,7 +6,7 @@ import json
 
 import datetime
 
-from scripts.interaction_with_menu_data_base import check_menu_id, add_menu_id
+from scripts.menu_data_base_interaction import check_menu_id, add_menu_id
 from scripts.menu_operations import get_menu, delete_menu
 
 from keyboards.menu_keyboards import get_menu_simple_keyboard_fab, get_menu_calendar_keyboard_fab
@@ -141,3 +141,18 @@ class GroupMenuMessage(MenuMessage):
                 id_string = sent_files.strip()
 
                 await add_menu_id(self.date, id_string)
+
+
+class CalendarMenuMessage:
+    def __init__(self, msg: Message, dt: datetime.date):
+        self.calendar_message = msg
+        self.date = dt
+
+        self.new_message = True
+
+    async def send_message(self):
+        if self.new_message:
+            await self.calendar_message.answer("Выберите нужную вам дату",
+                                               reply_markup=get_menu_calendar_keyboard_fab(self.date))
+        else:
+            await self.calendar_message.edit_reply_markup(reply_markup=get_menu_calendar_keyboard_fab(self.date))
