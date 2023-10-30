@@ -8,9 +8,9 @@ router = Router()
 
 @router.message(Command("start"))
 async def cmd_start(message: Message):
-    print(f"\nUser id: {message.from_user.id}, Username: {message.from_user.username}")
+    print(f"User id: {message.from_user.id}, Username: {message.from_user.username}")
     print(f"First name: {message.from_user.first_name}, Last name: {message.from_user.last_name}")
-    print("Command: /start")
+    print("/start")
 
     await message.answer("""
 <b>СУНЦ НГУ Помощник</b>
@@ -25,10 +25,10 @@ async def cmd_start(message: Message):
 
 @router.message(Command("help"))
 async def cmd_start(message: Message):
-    print(f"\nUser id: {message.from_user.id}, Username: {message.from_user.username}")
+    print(f"User id: {message.from_user.id}, Username: {message.from_user.username}")
     print(f"First name: {message.from_user.first_name}, Last name: {message.from_user.last_name}")
-    print("Command: /help")
-
+    print("/help")
+    
     await message.answer("""
 <b>Команды, которые на данный момент доступны:</b>
 
