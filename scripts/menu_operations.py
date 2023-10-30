@@ -4,7 +4,7 @@ from os import mkdir
 
 from requests import get
 
-from re import search, escape, match
+from re import search, escape
 
 from pdf2image import convert_from_bytes
 

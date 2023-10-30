@@ -2,7 +2,7 @@ import datetime
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from keyboards.keyboard_classes import MenuSimpleCallbackFactory, MenuCalendarCallbackFactory
+from keyboards.menu_keyboard_classes import MenuSimpleCallbackFactory, MenuCalendarCallbackFactory
 
 
 def create_date_config(date: datetime.date):
@@ -38,21 +38,18 @@ def create_date_config(date: datetime.date):
     return new_config
 
 
-def get_menu_simple_keyboard_fab(page, date, number, need_pages=True):
-    if number == 0:
-        number += 1
-
+def get_menu_simple_keyboard_fab(page, date, number_of_pages):
     builder = InlineKeyboardBuilder()
 
-    if need_pages:
+    if number_of_pages > 0:
         builder.button(
             text="⏪ Страница", callback_data=MenuSimpleCallbackFactory(action="change",
-                                                                       page=((page - 1) % number),
+                                                                       page=((page - 1) % number_of_pages),
                                                                        date=date)
         )
         builder.button(
             text="Страница ⏩", callback_data=MenuSimpleCallbackFactory(action="change",
-                                                                       page=((page + 1) % number),
+                                                                       page=((page + 1) % number_of_pages),
                                                                        date=date)
         )
     builder.button(
