@@ -28,6 +28,8 @@ def get_day(df, column_name, day_of_week):
   for i in range(len(lessons)):
     if lessons[i] == "NAN":
       lessons[i] = "—"
+  for i in range(len(lessons)):
+    lessons[i] = lessons[i].ljust(5)
   cabinets = [str(d.iloc[1])[-3:], str(d.iloc[5])[-3:], str(d.iloc[9])[-3:]]
   for i in range(len(cabinets)):
     if cabinets[i] == "nan":
