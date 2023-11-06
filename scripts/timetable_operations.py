@@ -65,5 +65,4 @@ async def download_timetable():
 
 if __name__ == "__main__":
   r = asyncio.run(download_timetable())
-  print(r)
-  print(r["11_10"]["322"]["3"])
+  print(r["9_1"]["302"]["3"])

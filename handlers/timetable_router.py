@@ -9,6 +9,13 @@ router = Router()
 
 @router.message(Command("timetable"))
 async def cmd_timetable(message: Message):
-    print()
-
-    # await send_timetable()
+    await message.answer("""<code>+-------------+
+|    11-10    |
++-------------+
+|     321     |
++-------------+
+| ФИЗ   – 251 |
+| МАТ   – 160 |
+| МАТ Л – 251 |
++-------------+
+</code>""")

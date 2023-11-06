@@ -70,8 +70,7 @@ class SingleMenuMessage(MenuMessage):
                 await self.message.answer_photo(self.menu_pages[self.page],
                                                 caption=f"Меню на " +
                                                         f"{self.date.strftime(r'%d.%m.%Y')} " +
-                                                        f"({self.page + 1}/" +
-                                                        f"{self.number_of_pages})",
+                                                        f"({self.page + 1}/{self.number_of_pages})",
                                                 reply_markup=get_menu_simple_keyboard_fab(self.page,
                                                                                           self.date,
                                                                                           self.number_of_pages))
@@ -79,8 +78,7 @@ class SingleMenuMessage(MenuMessage):
                 await self.message.edit_media(InputMediaPhoto(media=self.menu_pages[self.page],
                                                               caption=f"Меню на " +
                                                                       f"{self.date.strftime(r'%d.%m.%Y')} " +
-                                                                      f"({self.page + 1}/" +
-                                                                      f"{self.number_of_pages})"),
+                                                                      f"({self.page + 1}/{self.number_of_pages})"),
                                               reply_markup=get_menu_simple_keyboard_fab(self.page,
                                                                                         self.date,
                                                                                         self.number_of_pages))

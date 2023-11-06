@@ -2,15 +2,11 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from scripts.logging_info_out import logging_output
-
 router = Router()
 
 
 @router.message(Command("start"))
 async def cmd_start(message: Message):
-    logging_output(message)
-
     await message.answer("""
 <b>СУНЦ НГУ Помощник</b>
 
@@ -24,8 +20,6 @@ async def cmd_start(message: Message):
 
 @router.message(Command("help"))
 async def cmd_start(message: Message):
-    logging_output(message)
-
     await message.answer("""
 <b>Команды, которые на данный момент доступны:</b>
 

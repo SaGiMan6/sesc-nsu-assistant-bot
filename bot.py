@@ -3,7 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from handlers import basic_router, menu_router
+from handlers import basic_router, timetable_router, menu_router
 
 import json
 
@@ -18,7 +18,9 @@ async def main():
     bot = Bot(token=token, parse_mode="HTML")
     dp = Dispatcher()
 
-    dp.include_routers(basic_router.router, menu_router.router)
+    dp.include_routers(basic_router.router,
+                       timetable_router.router,
+                       menu_router.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
