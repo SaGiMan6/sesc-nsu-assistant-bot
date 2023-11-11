@@ -4,5 +4,6 @@
 **/.venv/*
 
 private_config.json
+vk_access_token.txt
 
 *.jpg
