@@ -8,7 +8,8 @@ from warnings import warn
 with open("vk_access_token.txt", mode="r") as file:
     vk_access_token = file.read()
 vk_api_version = "5.154"
-url = f"https://api.vk.ru/method/wall.get?v={vk_api_version}&owner_id=-160464793&count=1&access_token={vk_access_token}"
+owner_id = "-160464793"
+url = f"https://api.vk.ru/method/wall.get?v={vk_api_version}&owner_id={owner_id}&count=1&access_token={vk_access_token}"
 
 
 async def get_last_text_message():
